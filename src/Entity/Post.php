@@ -11,10 +11,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\API\EmptyController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -33,6 +36,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
+#[ApiResource(
+    collectionOperations: [],
+    itemOperations: [
+        'get' => [
+            'controller' => EmptyController::class,
+            'read' => false,
+            'deserialize' => false
+        ]
+    ]
+)]
 class Post
 {
     /**
@@ -45,7 +58,7 @@ class Post
     /**
      * @ORM\Column(type="string")
      */
-    #[Assert\NotBlank]
+    #[Assert\NotBlank, Groups(['read:full:comment'])]
     private ?string $title = null;
 
     /**

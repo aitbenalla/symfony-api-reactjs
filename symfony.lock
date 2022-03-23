@@ -1,4 +1,18 @@
 {
+    "api-platform/core": {
+        "version": "2.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "05b57782a78c21a664a42055dc11cf1954ca36bb"
+        },
+        "files": [
+            "config/packages/api_platform.yaml",
+            "config/routes/api_platform.yaml",
+            "src/Entity/.gitignore"
+        ]
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.4"
     },
@@ -118,6 +132,9 @@
     "erusev/parsedown": {
         "version": "1.7.4"
     },
+    "fig/link-util": {
+        "version": "1.2.0"
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
@@ -139,6 +156,18 @@
     "monolog/monolog": {
         "version": "2.3.5"
     },
+    "nelmio/cors-bundle": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "6bea22e6c564fba3a1391615cada1437d0bde39c"
+        },
+        "files": [
+            "config/packages/nelmio_cors.yaml"
+        ]
+    },
     "nette/schema": {
         "version": "v1.2.2"
     },
@@ -147,6 +176,18 @@
     },
     "nikic/php-parser": {
         "version": "v4.13.2"
+    },
+    "phpdocumentor/reflection-common": {
+        "version": "2.2.0"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "5.3.0"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "1.6.0"
+    },
+    "phpstan/phpdoc-parser": {
+        "version": "1.2.0"
     },
     "phpstan/phpstan": {
         "version": "1.2.0"
@@ -159,6 +200,9 @@
     },
     "psr/event-dispatcher": {
         "version": "1.0.0"
+    },
+    "psr/link": {
+        "version": "2.0.1"
     },
     "psr/log": {
         "version": "1.1.4"
@@ -401,6 +445,9 @@
     "symfony/property-info": {
         "version": "v6.0.0"
     },
+    "symfony/proxy-manager-bridge": {
+        "version": "v6.0.6"
+    },
     "symfony/routing": {
         "version": "6.0",
         "recipe": {
@@ -437,6 +484,9 @@
     },
     "symfony/security-http": {
         "version": "v6.0.0"
+    },
+    "symfony/serializer": {
+        "version": "v6.0.6"
     },
     "symfony/service-contracts": {
         "version": "v3.0.0"
@@ -500,6 +550,9 @@
     },
     "symfony/var-exporter": {
         "version": "v6.0.0"
+    },
+    "symfony/web-link": {
+        "version": "v6.0.3"
     },
     "symfony/web-profiler-bundle": {
         "version": "3.3",
@@ -566,5 +619,11 @@
     },
     "twig/twig": {
         "version": "v3.3.4"
+    },
+    "webmozart/assert": {
+        "version": "1.10.0"
+    },
+    "willdurand/negotiation": {
+        "version": "3.1.0"
     }
 }
