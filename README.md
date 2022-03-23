@@ -1,4 +1,4 @@
-Symfony Demo Application
+Symfony Demo Application With API Platform And ReactJS
 ========================
 
 The "Symfony Demo Application" is a reference application created to show how
