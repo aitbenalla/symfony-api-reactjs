@@ -32,7 +32,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @author Ryan Weaver <weaverryan@gmail.com>
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
-#[ApiResource(
+#[
+    ApiResource(
     collectionOperations: [
         'get',
         'post'=>[
@@ -54,7 +55,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     normalizationContext: ['groups' => ['read:comment']],
     paginationItemsPerPage: 2
-)]
+),
+    ApiFilter(SearchFilter::class, properties: ['post'=>'exact'])
+]
 class Comment
 {
     /**
