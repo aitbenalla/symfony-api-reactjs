@@ -37,6 +37,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['read:comment'])]
     private ?int $id = null;
 
     /**
@@ -47,11 +48,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", unique=true)
-     * @Groups({"read:comment"})
      */
     #[
         Assert\NotBlank,
-        Assert\Length(min: 2, max: 50)
+        Assert\Length(min: 2, max: 50),
+        Groups(['read:comment'])
     ]
     private ?string $username = null;
 

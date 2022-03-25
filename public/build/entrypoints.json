@@ -6,11 +6,11 @@
         "http://localhost:8080/build/vendors-node_modules_jquery_dist_jquery_js-node_modules_webpack-dev-server_client_index_js_ht-55ccf4.js",
         "http://localhost:8080/build/vendors-node_modules_core-js_internals_add-to-unscopables_js-node_modules_core-js_internals_a-88c411.js",
         "http://localhost:8080/build/vendors-node_modules_core-js_internals_string-trim_js-node_modules_core-js_modules_es_object_-49a87d.js",
-        "http://localhost:8080/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap-sass_assets-1b3c3d.js",
+        "http://localhost:8080/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap-sass_assets-ca91c6.js",
         "http://localhost:8080/build/app.js"
       ],
       "css": [
-        "http://localhost:8080/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap-sass_assets-1b3c3d.css",
+        "http://localhost:8080/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap-sass_assets-ca91c6.css",
         "http://localhost:8080/build/app.css"
       ]
     },
