@@ -1,5 +1,5 @@
 import {render, unmountComponentAtNode} from "react-dom";
-import React, {useCallback, useEffect, useRef} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useFetch, usePaginatedFetch} from "./hooks";
 import {Icon} from "../components/Icon";
 import {Field} from "../components/Field";
@@ -8,6 +8,9 @@ const dateFormat = {
     dateStyle: 'medium',
     timeStyle: 'short'
 }
+
+const VIEW = 'VIEW'
+const EDIT = 'EDIT'
 
 function Comments({post, user}) {
 
@@ -25,21 +28,27 @@ function Comments({post, user}) {
         setComments(comments => comments.filter(c => c !== comment))
     }, [])
 
+    const updateComment = useCallback((newComment, oldComment) => {
+        setComments(comments => comments.map(c => c === oldComment ? newComment : c))
+    }, [])
+
     return <div>
         {user && <CommentForm post={post} onComment={addComment}/>}
         <Title count={count}/>
-        {comments.map(c => <Comment key={c.id} comment={c} canEdit={c.author.id === user} onDelete={deleteComment}/>)}
+        {comments.map(c => <Comment key={c.id} comment={c} canEdit={c.author.id === user} onDelete={deleteComment} onUpdate={updateComment}/>)}
         {hasMore && <button disabled={loading} onClick={load} className="btn btn-primary">Load More Comments</button>}
     </div>
 }
 
-const CommentForm = React.memo(({post, onComment}) => {
+const CommentForm = React.memo(({post = null, onComment, comment = null, onCancel = null}) => {
     const ref = useRef(null)
+    const method = comment ? 'PUT' : 'POST'
+    const url = comment ? comment['@id'] : '/api/comments'
     const onSuccess = useCallback(comment => {
         onComment(comment)
         ref.current.value = ''
     }, [ref, onComment])
-    const {load, loading, errors, clearError} = useFetch('/api/comments', 'POST', onSuccess)
+    const {load, loading, errors, clearError} = useFetch(url, method, onSuccess)
     const onSubmit = useCallback(e => {
         e.preventDefault()
         load({
@@ -48,30 +57,47 @@ const CommentForm = React.memo(({post, onComment}) => {
         })
 
     }, [load, ref, post])
+
+    useEffect(() => {
+        if (comment && comment.content && ref.current)
+            ref.current.value = comment.content
+    }, [comment, ref])
+
     return <div className="well">
         <form onSubmit={onSubmit}>
+            {comment === null &&
             <fieldset>
                 <legend>
                     <Icon icon="comment"/>Leave Comment
                 </legend>
             </fieldset>
+            }
             <Field ref={ref} onChange={clearError.bind(this, 'content')} required minLength={5} name="content"
                    help="help" error={errors['content']}>Your Comment:</Field>
             <div className="form-group">
                 <button className="btn btn-primary" disabled={loading}>
-                    <Icon icon="paper-plane"/> Comment
+                    <Icon icon="paper-plane"/> {comment === null ? 'Add Comment' : 'Update Comment'}
                 </button>
+                {onCancel && <button className="btn btn-default" onClick={onCancel}>Cancel</button>}
             </div>
         </form>
     </div>
 })
 
-const Comment = React.memo(({comment, onDelete, canEdit}) => {
+const Comment = React.memo(({comment, onDelete, canEdit, onUpdate}) => {
+
     const date = new Date(comment.publishedAt)
 
-    const onDeleteCallback = useCallback(() => {
-        onDelete(comment)
+    const [state, setState] = useState(VIEW)
+    
+    const toggleEdit = useCallback(() => setState(state => state === VIEW ? EDIT : VIEW), [])
+
+    const onComment = useCallback((newComment) => {
+        onUpdate(newComment, comment)
+        toggleEdit()
     }, [comment])
+
+    const onDeleteCallback = useCallback(() => onDelete(comment), [comment])
 
     const {loading: loadingDelete, load: loadDelete} = useFetch(comment['@id'], 'DELETE', onDeleteCallback)
 
@@ -82,13 +108,16 @@ const Comment = React.memo(({comment, onDelete, canEdit}) => {
             <strong>{date.toLocaleString(undefined, dateFormat)}</strong>
         </h4>
         <div className="col-sm-9">
-            <p>{comment.content}</p>
-            {canEdit &&
-                <p>
-                    <button className="btn btn-danger" onClick={loadDelete.bind(this, null)} disabled={loadingDelete}>
+            {state === VIEW ? <p>{comment.content}</p> : <CommentForm comment={comment} onComment={onComment} onCancel={toggleEdit} />}
+            {(canEdit && state !== EDIT) &&
+                <div className="btn-group" role="group" aria-label="Basic example">
+                    <button className="btn btn-sm btn-danger" onClick={loadDelete.bind(this, null)} disabled={loadingDelete}>
                        <Icon icon="trash" /> Delete
                     </button>
-                </p>
+                    <button className="btn btn-sm btn-default" onClick={toggleEdit}>
+                        <Icon icon="pen" /> Edit
+                    </button>
+                </div>
             }
         </div>
 
@@ -103,13 +132,36 @@ function Title({count}) {
 
 class CommentsElement extends HTMLElement {
 
+    constructor() {
+        super();
+        this.observer = null
+    }
+
     connectedCallback() {
         const post = parseInt(this.dataset.post, 10)
         const user = parseInt(this.dataset.user, 10) || null
-        render(<Comments post={post} user={user}/>, this)
+        if (this.observer === null)
+        {
+            this.observer = new IntersectionObserver((entries, observer  ) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && entry.target === this)
+                    {
+                        observer.disconnect()
+                        render(<Comments post={post} user={user}/>, this)
+                    }
+
+                })
+            })
+        }
+
+        this.observer.observe(this)
     }
 
     disconnectedCallback() {
+        if (this.observer)
+        {
+            this.observer.disconnect()
+        }
         unmountComponentAtNode(this)
     }
 }
